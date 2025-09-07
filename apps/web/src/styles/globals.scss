@@ -1,0 +1,88 @@
+/* Import Tailwind directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// Custom CSS for RTL support
+[dir="rtl"] {
+  direction: rtl;
+}
+
+[dir="ltr"] {
+  direction: ltr;
+}
+
+// Arabic font support
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap');
+
+// Custom USWDS overrides for better multilingual support
+.usa-header {
+  font-family: var(--font-family);
+}
+
+// Language-specific typography
+[lang="ar"] {
+  font-family: 'Noto Sans Arabic', serif;
+  line-height: 1.8;
+}
+
+[lang="en"], 
+[lang="es"], 
+[lang="fr"] {
+  font-family: 'Public Sans', system-ui, sans-serif;
+  line-height: 1.6;
+}
+
+// Custom utility classes for Immigration Suite
+.immigration-card {
+  @apply bg-white border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow;
+}
+
+.immigration-button {
+  @apply inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-uswds-blue-600 hover:bg-uswds-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-uswds-blue-500;
+}
+
+.immigration-button-secondary {
+  @apply inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-uswds-blue-500;
+}
+
+// USWDS spacing utilities for consistent layout
+.usa-spacing-y-1 { @apply space-y-4; }
+.usa-spacing-y-2 { @apply space-y-8; }
+.usa-spacing-y-3 { @apply space-y-12; }
+
+// Responsive grid for forms and content
+.usa-grid {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6;
+}
+
+// Focus states for accessibility
+.usa-focus {
+  @apply focus:outline-none focus:ring-2 focus:ring-uswds-blue-500 focus:ring-offset-2;
+}
+
+// Language switcher styles
+.language-switcher {
+  @apply relative inline-block text-left;
+}
+
+.language-switcher-button {
+  @apply inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-uswds-blue-500;
+}
+
+.language-switcher-dropdown {
+  @apply origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50;
+}
+
+// Custom styles for RTL layout adjustments
+[dir="rtl"] .language-switcher-dropdown {
+  @apply origin-top-left absolute left-0 right-auto;
+}
+
+[dir="rtl"] .immigration-card {
+  text-align: right;
+}
+
+[dir="ltr"] .immigration-card {
+  text-align: left;
+}

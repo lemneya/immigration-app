@@ -1,0 +1,37 @@
+services:
+  pdf-fill:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: immigration-pdf-fill
+    environment:
+      NODE_ENV: production
+      PORT: 3004
+      TEMPLATES_DIR: /app/templates
+      OUTPUT_DIR: /app/output
+      DEFAULT_FLATTEN: "true"
+      DEFAULT_INCLUDE_METADATA: "true"
+      DEFAULT_VALIDATE_FIELDS: "true"
+    ports:
+      - "3004:3004"
+    volumes:
+      - pdf_templates:/app/templates
+      - pdf_output:/app/output
+      - pdf_logs:/app/logs
+    networks:
+      - immigration-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3004/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  pdf_templates:
+  pdf_output:
+  pdf_logs:
+
+networks:
+  immigration-network:
+    external: true

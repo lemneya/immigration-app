@@ -1,0 +1,397 @@
+{
+  "title": "Form I-485: Application to Adjust Status to Permanent Resident",
+  "name": "i485",
+  "path": "i485",
+  "type": "form",
+  "display": "wizard",
+  "components": [
+    {
+      "title": "Personal Information",
+      "label": "Page 1",
+      "type": "panel",
+      "key": "page1",
+      "components": [
+        {
+          "label": "Given Name (First Name)",
+          "type": "textfield",
+          "key": "givenName",
+          "input": true,
+          "tableView": true,
+          "validate": {
+            "required": true,
+            "minLength": 1
+          },
+          "customClass": "usa-input",
+          "labelPosition": "top",
+          "description": "Enter your first name as it appears on your passport or official documents"
+        },
+        {
+          "label": "Middle Name",
+          "type": "textfield",
+          "key": "middleName",
+          "input": true,
+          "tableView": true,
+          "customClass": "usa-input",
+          "labelPosition": "top",
+          "description": "Enter your middle name if you have one"
+        },
+        {
+          "label": "Family Name (Last Name)",
+          "type": "textfield",
+          "key": "familyName",
+          "input": true,
+          "tableView": true,
+          "validate": {
+            "required": true,
+            "minLength": 1
+          },
+          "customClass": "usa-input",
+          "labelPosition": "top",
+          "description": "Enter your last name as it appears on your passport or official documents"
+        },
+        {
+          "label": "Other Names Used",
+          "type": "textarea",
+          "key": "otherNames",
+          "input": true,
+          "tableView": true,
+          "customClass": "usa-textarea",
+          "labelPosition": "top",
+          "description": "List any other names you have used (maiden name, aliases, etc.)"
+        },
+        {
+          "label": "Date of Birth",
+          "type": "datetime",
+          "key": "dateOfBirth",
+          "input": true,
+          "tableView": true,
+          "validate": {
+            "required": true
+          },
+          "customClass": "usa-input",
+          "labelPosition": "top",
+          "format": "yyyy-MM-dd",
+          "enableDate": true,
+          "enableTime": false,
+          "description": "Enter your date of birth (MM/DD/YYYY)"
+        },
+        {
+          "label": "Country of Birth",
+          "type": "select",
+          "key": "countryOfBirth",
+          "input": true,
+          "tableView": true,
+          "validate": {
+            "required": true
+          },
+          "customClass": "usa-select",
+          "labelPosition": "top",
+          "data": {
+            "values": [
+              {"label": "Afghanistan", "value": "AF"},
+              {"label": "Albania", "value": "AL"},
+              {"label": "Algeria", "value": "DZ"},
+              {"label": "Argentina", "value": "AR"},
+              {"label": "Australia", "value": "AU"},
+              {"label": "Austria", "value": "AT"},
+              {"label": "Bangladesh", "value": "BD"},
+              {"label": "Belgium", "value": "BE"},
+              {"label": "Brazil", "value": "BR"},
+              {"label": "Canada", "value": "CA"},
+              {"label": "China", "value": "CN"},
+              {"label": "Colombia", "value": "CO"},
+              {"label": "Cuba", "value": "CU"},
+              {"label": "Egypt", "value": "EG"},
+              {"label": "France", "value": "FR"},
+              {"label": "Germany", "value": "DE"},
+              {"label": "Ghana", "value": "GH"},
+              {"label": "Greece", "value": "GR"},
+              {"label": "Guatemala", "value": "GT"},
+              {"label": "Haiti", "value": "HT"},
+              {"label": "India", "value": "IN"},
+              {"label": "Iran", "value": "IR"},
+              {"label": "Iraq", "value": "IQ"},
+              {"label": "Ireland", "value": "IE"},
+              {"label": "Israel", "value": "IL"},
+              {"label": "Italy", "value": "IT"},
+              {"label": "Jamaica", "value": "JM"},
+              {"label": "Japan", "value": "JP"},
+              {"label": "Jordan", "value": "JO"},
+              {"label": "Kenya", "value": "KE"},
+              {"label": "Lebanon", "value": "LB"},
+              {"label": "Mexico", "value": "MX"},
+              {"label": "Morocco", "value": "MA"},
+              {"label": "Nigeria", "value": "NG"},
+              {"label": "Pakistan", "value": "PK"},
+              {"label": "Peru", "value": "PE"},
+              {"label": "Philippines", "value": "PH"},
+              {"label": "Poland", "value": "PL"},
+              {"label": "Russia", "value": "RU"},
+              {"label": "Saudi Arabia", "value": "SA"},
+              {"label": "Somalia", "value": "SO"},
+              {"label": "South Korea", "value": "KR"},
+              {"label": "Spain", "value": "ES"},
+              {"label": "Syria", "value": "SY"},
+              {"label": "Turkey", "value": "TR"},
+              {"label": "Ukraine", "value": "UA"},
+              {"label": "United Kingdom", "value": "GB"},
+              {"label": "Venezuela", "value": "VE"},
+              {"label": "Vietnam", "value": "VN"},
+              {"label": "Yemen", "value": "YE"}
+            ]
+          },
+          "description": "Select your country of birth"
+        },
+        {
+          "label": "Country of Citizenship/Nationality",
+          "type": "select",
+          "key": "countryOfCitizenship",
+          "input": true,
+          "tableView": true,
+          "validate": {
+            "required": true
+          },
+          "customClass": "usa-select",
+          "labelPosition": "top",
+          "data": {
+            "values": [
+              {"label": "Afghanistan", "value": "AF"},
+              {"label": "Albania", "value": "AL"},
+              {"label": "Algeria", "value": "DZ"},
+              {"label": "Argentina", "value": "AR"},
+              {"label": "Australia", "value": "AU"},
+              {"label": "Austria", "value": "AT"},
+              {"label": "Bangladesh", "value": "BD"},
+              {"label": "Belgium", "value": "BE"},
+              {"label": "Brazil", "value": "BR"},
+              {"label": "Canada", "value": "CA"},
+              {"label": "China", "value": "CN"},
+              {"label": "Colombia", "value": "CO"},
+              {"label": "Cuba", "value": "CU"},
+              {"label": "Egypt", "value": "EG"},
+              {"label": "France", "value": "FR"},
+              {"label": "Germany", "value": "DE"},
+              {"label": "Ghana", "value": "GH"},
+              {"label": "Greece", "value": "GR"},
+              {"label": "Guatemala", "value": "GT"},
+              {"label": "Haiti", "value": "HT"},
+              {"label": "India", "value": "IN"},
+              {"label": "Iran", "value": "IR"},
+              {"label": "Iraq", "value": "IQ"},
+              {"label": "Ireland", "value": "IE"},
+              {"label": "Israel", "value": "IL"},
+              {"label": "Italy", "value": "IT"},
+              {"label": "Jamaica", "value": "JM"},
+              {"label": "Japan", "value": "JP"},
+              {"label": "Jordan", "value": "JO"},
+              {"label": "Kenya", "value": "KE"},
+              {"label": "Lebanon", "value": "LB"},
+              {"label": "Mexico", "value": "MX"},
+              {"label": "Morocco", "value": "MA"},
+              {"label": "Nigeria", "value": "NG"},
+              {"label": "Pakistan", "value": "PK"},
+              {"label": "Peru", "value": "PE"},
+              {"label": "Philippines", "value": "PH"},
+              {"label": "Poland", "value": "PL"},
+              {"label": "Russia", "value": "RU"},
+              {"label": "Saudi Arabia", "value": "SA"},
+              {"label": "Somalia", "value": "SO"},
+              {"label": "South Korea", "value": "KR"},
+              {"label": "Spain", "value": "ES"},
+              {"label": "Syria", "value": "SY"},
+              {"label": "Turkey", "value": "TR"},
+              {"label": "Ukraine", "value": "UA"},
+              {"label": "United Kingdom", "value": "GB"},
+              {"label": "Venezuela", "value": "VE"},
+              {"label": "Vietnam", "value": "VN"},
+              {"label": "Yemen", "value": "YE"}
+            ]
+          },
+          "description": "Select your current country of citizenship"
+        }
+      ]
+    },
+    {
+      "title": "Contact Information",
+      "label": "Page 2",
+      "type": "panel",
+      "key": "page2",
+      "components": [
+        {
+          "label": "Current Physical Address",
+          "type": "address",
+          "key": "currentAddress",
+          "input": true,
+          "tableView": true,
+          "validate": {
+            "required": true
+          },
+          "components": [
+            {
+              "label": "Address Line 1",
+              "type": "textfield",
+              "key": "address1",
+              "input": true,
+              "customClass": "usa-input"
+            },
+            {
+              "label": "Address Line 2 (Optional)",
+              "type": "textfield",
+              "key": "address2",
+              "input": true,
+              "customClass": "usa-input"
+            },
+            {
+              "label": "City",
+              "type": "textfield",
+              "key": "city",
+              "input": true,
+              "customClass": "usa-input"
+            },
+            {
+              "label": "State",
+              "type": "select",
+              "key": "state",
+              "input": true,
+              "customClass": "usa-select",
+              "data": {
+                "values": [
+                  {"label": "Alabama", "value": "AL"},
+                  {"label": "Alaska", "value": "AK"},
+                  {"label": "Arizona", "value": "AZ"},
+                  {"label": "Arkansas", "value": "AR"},
+                  {"label": "California", "value": "CA"},
+                  {"label": "Colorado", "value": "CO"},
+                  {"label": "Connecticut", "value": "CT"},
+                  {"label": "Delaware", "value": "DE"},
+                  {"label": "Florida", "value": "FL"},
+                  {"label": "Georgia", "value": "GA"},
+                  {"label": "Hawaii", "value": "HI"},
+                  {"label": "Idaho", "value": "ID"},
+                  {"label": "Illinois", "value": "IL"},
+                  {"label": "Indiana", "value": "IN"},
+                  {"label": "Iowa", "value": "IA"},
+                  {"label": "Kansas", "value": "KS"},
+                  {"label": "Kentucky", "value": "KY"},
+                  {"label": "Louisiana", "value": "LA"},
+                  {"label": "Maine", "value": "ME"},
+                  {"label": "Maryland", "value": "MD"},
+                  {"label": "Massachusetts", "value": "MA"},
+                  {"label": "Michigan", "value": "MI"},
+                  {"label": "Minnesota", "value": "MN"},
+                  {"label": "Mississippi", "value": "MS"},
+                  {"label": "Missouri", "value": "MO"},
+                  {"label": "Montana", "value": "MT"},
+                  {"label": "Nebraska", "value": "NE"},
+                  {"label": "Nevada", "value": "NV"},
+                  {"label": "New Hampshire", "value": "NH"},
+                  {"label": "New Jersey", "value": "NJ"},
+                  {"label": "New Mexico", "value": "NM"},
+                  {"label": "New York", "value": "NY"},
+                  {"label": "North Carolina", "value": "NC"},
+                  {"label": "North Dakota", "value": "ND"},
+                  {"label": "Ohio", "value": "OH"},
+                  {"label": "Oklahoma", "value": "OK"},
+                  {"label": "Oregon", "value": "OR"},
+                  {"label": "Pennsylvania", "value": "PA"},
+                  {"label": "Rhode Island", "value": "RI"},
+                  {"label": "South Carolina", "value": "SC"},
+                  {"label": "South Dakota", "value": "SD"},
+                  {"label": "Tennessee", "value": "TN"},
+                  {"label": "Texas", "value": "TX"},
+                  {"label": "Utah", "value": "UT"},
+                  {"label": "Vermont", "value": "VT"},
+                  {"label": "Virginia", "value": "VA"},
+                  {"label": "Washington", "value": "WA"},
+                  {"label": "West Virginia", "value": "WV"},
+                  {"label": "Wisconsin", "value": "WI"},
+                  {"label": "Wyoming", "value": "WY"}
+                ]
+              }
+            },
+            {
+              "label": "ZIP Code",
+              "type": "textfield",
+              "key": "zipCode",
+              "input": true,
+              "customClass": "usa-input",
+              "validate": {
+                "pattern": "^\\d{5}(-\\d{4})?$"
+              }
+            }
+          ]
+        },
+        {
+          "label": "Phone Number",
+          "type": "phoneNumber",
+          "key": "phoneNumber",
+          "input": true,
+          "tableView": true,
+          "validate": {
+            "required": true
+          },
+          "customClass": "usa-input",
+          "labelPosition": "top",
+          "description": "Enter your primary phone number"
+        },
+        {
+          "label": "Email Address",
+          "type": "email",
+          "key": "emailAddress",
+          "input": true,
+          "tableView": true,
+          "validate": {
+            "required": true
+          },
+          "customClass": "usa-input",
+          "labelPosition": "top",
+          "description": "Enter a valid email address for correspondence"
+        }
+      ]
+    },
+    {
+      "title": "Application Type",
+      "label": "Page 3",
+      "type": "panel",
+      "key": "page3",
+      "components": [
+        {
+          "label": "I am applying for adjustment of status because:",
+          "type": "radio",
+          "key": "applicationType",
+          "input": true,
+          "tableView": true,
+          "validate": {
+            "required": true
+          },
+          "customClass": "usa-radio",
+          "values": [
+            {
+              "label": "(a) an immigrant petition giving me an immediately available immigrant visa number that has been approved",
+              "value": "a"
+            },
+            {
+              "label": "(b) My spouse or parent applied for adjustment of status or was granted lawful permanent residence in an immigrant visa category that allows derivative status for spouses and children",
+              "value": "b"
+            },
+            {
+              "label": "(c) I entered as a K-1 fiancé(e) of a United States citizen whom I married within 90 days of entry, or I am the K-2 child of such a fiancé(e)",
+              "value": "c"
+            },
+            {
+              "label": "(h) I am a native or citizen of Cuba admitted or paroled into the United States after January 1, 1959, and thereafter have been physically present in the United States for at least 1 year",
+              "value": "h"
+            }
+          ],
+          "description": "Select the category that applies to your situation"
+        }
+      ]
+    }
+  ],
+  "settings": {
+    "pdf": {
+      "id": "1ec0f8ee-6685-5d98-a847-26f67b67d6f0",
+      "src": "https://www.uscis.gov/sites/default/files/document/forms/i-485.pdf"
+    }
+  }
+}

@@ -1,0 +1,91 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  - "rules/*.yml"
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - alertmanager:9093
+
+scrape_configs:
+  # Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Node Exporter
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+
+  # cAdvisor
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['cadvisor:8080']
+
+  # Application services
+  - job_name: 'web-app'
+    static_configs:
+      - targets: ['web:3000']
+    metrics_path: '/api/metrics'
+    scrape_interval: 30s
+
+  - job_name: 'security-service'
+    static_configs:
+      - targets: ['security:3010']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+
+  - job_name: 'ocr-service'
+    static_configs:
+      - targets: ['ocr:8000']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+
+  - job_name: 'pdf-fill-service'
+    static_configs:
+      - targets: ['pdf-fill:3002']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+
+  - job_name: 'e-signature-service'
+    static_configs:
+      - targets: ['e-signature:3003']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+
+  - job_name: 'case-status-service'
+    static_configs:
+      - targets: ['case-status:3004']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+
+  - job_name: 'voice-translation-service'
+    static_configs:
+      - targets: ['voice-translation:3009']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+
+  - job_name: 'admin-dashboard'
+    static_configs:
+      - targets: ['admin-dashboard:3001']
+    metrics_path: '/api/metrics'
+    scrape_interval: 30s
+
+  # Database exporters
+  - job_name: 'redis-exporter'
+    static_configs:
+      - targets: ['redis-exporter:9121']
+
+  - job_name: 'mongodb-exporter'
+    static_configs:
+      - targets: ['mongodb-exporter:9216']
+
+  # Nginx exporter
+  - job_name: 'nginx-exporter'
+    static_configs:
+      - targets: ['nginx-exporter:9113']

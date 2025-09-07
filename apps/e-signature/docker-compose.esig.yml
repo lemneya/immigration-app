@@ -1,0 +1,39 @@
+services:
+  e-signature:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: immigration-esignature
+    environment:
+      NODE_ENV: production
+      PORT: 3005
+      DOCUSEAL_URL: http://docuseal:3000
+      DOCUSEAL_API_KEY: ${DOCUSEAL_API_KEY:-dev_api_key}
+      DOCUSEAL_WEBHOOK_SECRET: ${DOCUSEAL_WEBHOOK_SECRET:-dev_webhook_secret}
+      DEFAULT_EXPIRATION_DAYS: "30"
+      DEFAULT_REMINDER_INTERVAL: "7"
+      MAX_FILE_SIZE: "10485760"
+      ALLOWED_FILE_TYPES: "pdf,docx,doc"
+    ports:
+      - "3005:3005"
+    volumes:
+      - esig_uploads:/app/uploads
+      - esig_logs:/app/logs
+    networks:
+      - immigration-network
+    depends_on:
+      - docuseal
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3005/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  esig_uploads:
+  esig_logs:
+
+networks:
+  immigration-network:
+    external: true

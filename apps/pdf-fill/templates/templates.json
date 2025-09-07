@@ -1,0 +1,50 @@
+{
+  "version": "1.0",
+  "lastUpdated": "2025-09-04T06:28:59.876Z",
+  "templates": [
+    {
+      "formType": "i485",
+      "name": "Form I-485",
+      "description": "Application to Register Permanent Residence or Adjust Status",
+      "officialUrl": "https://www.uscis.gov/i-485",
+      "pages": 14,
+      "formFields": 89,
+      "version": "1.0",
+      "filePath": "/Users/mohiyidinecheikh/immigration-suite/apps/pdf-fill/templates/i485.pdf",
+      "lastUpdated": "2025-09-04T06:28:59.864Z"
+    },
+    {
+      "formType": "i130",
+      "name": "Form I-130",
+      "description": "Petition for Alien Relative",
+      "officialUrl": "https://www.uscis.gov/i-130",
+      "pages": 12,
+      "formFields": 67,
+      "version": "1.0",
+      "filePath": "/Users/mohiyidinecheikh/immigration-suite/apps/pdf-fill/templates/i130.pdf",
+      "lastUpdated": "2025-09-04T06:28:59.870Z"
+    },
+    {
+      "formType": "i131",
+      "name": "Form I-131",
+      "description": "Application for Travel Document",
+      "officialUrl": "https://www.uscis.gov/i-131",
+      "pages": 8,
+      "formFields": 45,
+      "version": "1.0",
+      "filePath": "/Users/mohiyidinecheikh/immigration-suite/apps/pdf-fill/templates/i131.pdf",
+      "lastUpdated": "2025-09-04T06:28:59.874Z"
+    },
+    {
+      "formType": "g28",
+      "name": "Form G-28",
+      "description": "Notice of Entry of Appearance as Attorney or Accredited Representative",
+      "officialUrl": "https://www.uscis.gov/g-28",
+      "pages": 2,
+      "formFields": 23,
+      "version": "1.0",
+      "filePath": "/Users/mohiyidinecheikh/immigration-suite/apps/pdf-fill/templates/g28.pdf",
+      "lastUpdated": "2025-09-04T06:28:59.876Z"
+    }
+  ]
+}

@@ -1,0 +1,135 @@
+groups:
+- name: bmore_alerts
+  rules:
+  # High-level service alerts
+  - alert: ServiceDown
+    expr: up == 0
+    for: 1m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Service {{ $labels.job }} is down"
+      description: "Service {{ $labels.job }} has been down for more than 1 minute."
+
+  - alert: HighErrorRate
+    expr: rate(http_requests_total{status=~"5.."}[5m]) > 0.1
+    for: 2m
+    labels:
+      severity: critical
+    annotations:
+      summary: "High error rate on {{ $labels.job }}"
+      description: "Error rate is {{ $value | humanizePercentage }} on {{ $labels.job }}"
+
+  # Memory alerts
+  - alert: HighMemoryUsage
+    expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 85
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "High memory usage detected"
+      description: "Memory usage is above 85% (current: {{ $value | humanize }}%)"
+
+  - alert: CriticalMemoryUsage
+    expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 95
+    for: 2m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Critical memory usage detected"
+      description: "Memory usage is above 95% (current: {{ $value | humanize }}%)"
+
+  # CPU alerts
+  - alert: HighCPUUsage
+    expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "High CPU usage detected"
+      description: "CPU usage is above 80% (current: {{ $value | humanize }}%)"
+
+  # Disk space alerts
+  - alert: DiskSpaceWarning
+    expr: (node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"}) * 100 < 20
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Disk space is running low"
+      description: "Disk space is below 20% (current: {{ $value | humanize }}%)"
+
+  - alert: DiskSpaceCritical
+    expr: (node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"}) * 100 < 10
+    for: 2m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Critical disk space"
+      description: "Disk space is below 10% (current: {{ $value | humanize }}%)"
+
+  # Database alerts
+  - alert: MongoDBDown
+    expr: up{job="mongodb-exporter"} == 0
+    for: 1m
+    labels:
+      severity: critical
+    annotations:
+      summary: "MongoDB is down"
+      description: "MongoDB has been down for more than 1 minute"
+
+  - alert: RedisDown
+    expr: up{job="redis-exporter"} == 0
+    for: 1m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Redis is down"
+      description: "Redis has been down for more than 1 minute"
+
+  # Application-specific alerts
+  - alert: OCRServiceHighLatency
+    expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{job="ocr-service"}[5m])) > 10
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      summary: "OCR service high latency"
+      description: "95th percentile latency is {{ $value }}s"
+
+  - alert: SecurityServiceHighLatency
+    expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{job="security-service"}[5m])) > 5
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Security service high latency"
+      description: "95th percentile latency is {{ $value }}s"
+
+  - alert: HighSecurityIncidents
+    expr: increase(security_incidents_total[1h]) > 10
+    for: 0m
+    labels:
+      severity: critical
+    annotations:
+      summary: "High number of security incidents"
+      description: "{{ $value }} security incidents in the last hour"
+
+  # Container alerts
+  - alert: ContainerHighMemoryUsage
+    expr: (container_memory_usage_bytes / container_spec_memory_limit_bytes) * 100 > 80
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Container {{ $labels.name }} high memory usage"
+      description: "Container memory usage is {{ $value | humanize }}%"
+
+  - alert: ContainerRestartLooping
+    expr: increase(container_start_time_seconds[1h]) > 5
+    for: 0m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Container {{ $labels.name }} restarting frequently"
+      description: "Container has restarted {{ $value }} times in the last hour"

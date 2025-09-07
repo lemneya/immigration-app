@@ -1,0 +1,60 @@
+{
+  "common": {
+    "loading": "Cargando...",
+    "error": "Ocurrió un error",
+    "submit": "Enviar",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "close": "Cerrar",
+    "home": "Inicio",
+    "language": "Idioma"
+  },
+  "navigation": {
+    "home": "Inicio",
+    "forms": "Formularios",
+    "cases": "Mis Casos",
+    "documents": "Documentos",
+    "help": "Ayuda",
+    "account": "Cuenta"
+  },
+  "home": {
+    "title": "Suite de Inmigración",
+    "subtitle": "Asistente de Inmigración Multilingüe",
+    "description": "Complete formularios de inmigración con procesamiento inteligente de documentos, soporte multilingüe y firmas digitales seguras.",
+    "getStarted": "Comenzar",
+    "features": {
+      "multilingual": {
+        "title": "Soporte Multilingüe",
+        "description": "Disponible en inglés, español, francés y árabe con soporte completo RTL"
+      },
+      "smartForms": {
+        "title": "Formularios Inteligentes",
+        "description": "Formularios USCIS con extracción OCR y pre-llenado con IA"
+      },
+      "secure": {
+        "title": "Seguro y Conforme",
+        "description": "Cifrado de extremo a extremo, registro de auditoría y cumplimiento GDPR"
+      }
+    }
+  },
+  "forms": {
+    "title": "Formularios de Inmigración",
+    "selectForm": "Seleccione un formulario para comenzar",
+    "i485": {
+      "title": "Formulario I-485",
+      "description": "Solicitud para Ajustar Estatus a Residente Permanente"
+    },
+    "i130": {
+      "title": "Formulario I-130",
+      "description": "Petición para Familiar Extranjero"
+    }
+  },
+  "footer": {
+    "copyright": "© 2024 Suite de Inmigración. Todos los derechos reservados.",
+    "privacy": "Política de Privacidad",
+    "terms": "Términos de Servicio",
+    "contact": "Contáctanos"
+  }
+}

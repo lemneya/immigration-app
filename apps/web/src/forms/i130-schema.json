@@ -1,0 +1,199 @@
+{
+  "title": "Form I-130: Petition for Alien Relative",
+  "name": "i130",
+  "path": "i130",
+  "type": "form",
+  "display": "wizard",
+  "components": [
+    {
+      "title": "Petitioner Information",
+      "label": "Page 1",
+      "type": "panel",
+      "key": "page1",
+      "components": [
+        {
+          "label": "Given Name (First Name)",
+          "type": "textfield",
+          "key": "petitionerGivenName",
+          "input": true,
+          "tableView": true,
+          "validate": {
+            "required": true
+          },
+          "customClass": "usa-input",
+          "labelPosition": "top"
+        },
+        {
+          "label": "Middle Name",
+          "type": "textfield",
+          "key": "petitionerMiddleName",
+          "input": true,
+          "tableView": true,
+          "customClass": "usa-input",
+          "labelPosition": "top"
+        },
+        {
+          "label": "Family Name (Last Name)",
+          "type": "textfield",
+          "key": "petitionerFamilyName",
+          "input": true,
+          "tableView": true,
+          "validate": {
+            "required": true
+          },
+          "customClass": "usa-input",
+          "labelPosition": "top"
+        },
+        {
+          "label": "Date of Birth",
+          "type": "datetime",
+          "key": "petitionerDateOfBirth",
+          "input": true,
+          "tableView": true,
+          "validate": {
+            "required": true
+          },
+          "customClass": "usa-input",
+          "labelPosition": "top",
+          "format": "yyyy-MM-dd",
+          "enableDate": true,
+          "enableTime": false
+        },
+        {
+          "label": "Place of Birth (City and Country)",
+          "type": "textfield",
+          "key": "petitionerPlaceOfBirth",
+          "input": true,
+          "tableView": true,
+          "validate": {
+            "required": true
+          },
+          "customClass": "usa-input",
+          "labelPosition": "top"
+        }
+      ]
+    },
+    {
+      "title": "Beneficiary Information",
+      "label": "Page 2", 
+      "type": "panel",
+      "key": "page2",
+      "components": [
+        {
+          "label": "Given Name (First Name)",
+          "type": "textfield",
+          "key": "beneficiaryGivenName",
+          "input": true,
+          "tableView": true,
+          "validate": {
+            "required": true
+          },
+          "customClass": "usa-input",
+          "labelPosition": "top"
+        },
+        {
+          "label": "Middle Name",
+          "type": "textfield",
+          "key": "beneficiaryMiddleName",
+          "input": true,
+          "tableView": true,
+          "customClass": "usa-input",
+          "labelPosition": "top"
+        },
+        {
+          "label": "Family Name (Last Name)",
+          "type": "textfield",
+          "key": "beneficiaryFamilyName",
+          "input": true,
+          "tableView": true,
+          "validate": {
+            "required": true
+          },
+          "customClass": "usa-input",
+          "labelPosition": "top"
+        },
+        {
+          "label": "Date of Birth",
+          "type": "datetime",
+          "key": "beneficiaryDateOfBirth",
+          "input": true,
+          "tableView": true,
+          "validate": {
+            "required": true
+          },
+          "customClass": "usa-input",
+          "labelPosition": "top",
+          "format": "yyyy-MM-dd",
+          "enableDate": true,
+          "enableTime": false
+        },
+        {
+          "label": "Country of Birth",
+          "type": "select",
+          "key": "beneficiaryCountryOfBirth",
+          "input": true,
+          "tableView": true,
+          "validate": {
+            "required": true
+          },
+          "customClass": "usa-select",
+          "labelPosition": "top",
+          "data": {
+            "values": [
+              {"label": "Mexico", "value": "MX"},
+              {"label": "India", "value": "IN"},
+              {"label": "China", "value": "CN"},
+              {"label": "Philippines", "value": "PH"},
+              {"label": "Cuba", "value": "CU"},
+              {"label": "Vietnam", "value": "VN"},
+              {"label": "Haiti", "value": "HT"}
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Relationship",
+      "label": "Page 3",
+      "type": "panel", 
+      "key": "page3",
+      "components": [
+        {
+          "label": "Relationship to you (the petitioner)",
+          "type": "radio",
+          "key": "relationship",
+          "input": true,
+          "tableView": true,
+          "validate": {
+            "required": true
+          },
+          "customClass": "usa-radio",
+          "values": [
+            {
+              "label": "Spouse",
+              "value": "spouse"
+            },
+            {
+              "label": "Parent",
+              "value": "parent"
+            },
+            {
+              "label": "Child",
+              "value": "child"
+            },
+            {
+              "label": "Sibling (Brother or Sister)",
+              "value": "sibling"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "settings": {
+    "pdf": {
+      "id": "1ec0f8ee-6685-5d98-a847-26f67b67d6f1",
+      "src": "https://www.uscis.gov/sites/default/files/document/forms/i-130.pdf"
+    }
+  }
+}

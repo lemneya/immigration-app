@@ -1,0 +1,60 @@
+{
+  "common": {
+    "loading": "Chargement...",
+    "error": "Une erreur s'est produite",
+    "submit": "Soumettre",
+    "cancel": "Annuler",
+    "save": "Sauvegarder",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "close": "Fermer",
+    "home": "Accueil",
+    "language": "Langue"
+  },
+  "navigation": {
+    "home": "Accueil",
+    "forms": "Formulaires",
+    "cases": "Mes Dossiers",
+    "documents": "Documents",
+    "help": "Aide",
+    "account": "Compte"
+  },
+  "home": {
+    "title": "Suite d'Immigration",
+    "subtitle": "Assistant d'Immigration Multilingue",
+    "description": "Complétez les formulaires d'immigration avec traitement intelligent des documents, support multilingue et signatures numériques sécurisées.",
+    "getStarted": "Commencer",
+    "features": {
+      "multilingual": {
+        "title": "Support Multilingue",
+        "description": "Disponible en anglais, espagnol, français et arabe avec support RTL complet"
+      },
+      "smartForms": {
+        "title": "Formulaires Intelligents",
+        "description": "Formulaires USCIS avec extraction OCR et pré-remplissage par IA"
+      },
+      "secure": {
+        "title": "Sécurisé et Conforme",
+        "description": "Chiffrement de bout en bout, journalisation d'audit et conformité RGPD"
+      }
+    }
+  },
+  "forms": {
+    "title": "Formulaires d'Immigration",
+    "selectForm": "Sélectionnez un formulaire pour commencer",
+    "i485": {
+      "title": "Formulaire I-485",
+      "description": "Demande d'Ajustement de Statut vers Résident Permanent"
+    },
+    "i130": {
+      "title": "Formulaire I-130",
+      "description": "Pétition pour un Parent Étranger"
+    }
+  },
+  "footer": {
+    "copyright": "© 2024 Suite d'Immigration. Tous droits réservés.",
+    "privacy": "Politique de Confidentialité",
+    "terms": "Conditions de Service",
+    "contact": "Nous Contacter"
+  }
+}

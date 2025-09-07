@@ -1,0 +1,60 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close",
+    "home": "Home",
+    "language": "Language"
+  },
+  "navigation": {
+    "home": "Home",
+    "forms": "Forms",
+    "cases": "My Cases",
+    "documents": "Documents",
+    "help": "Help",
+    "account": "Account"
+  },
+  "home": {
+    "title": "Immigration Suite",
+    "subtitle": "Multilingual Immigration Assistant",
+    "description": "Complete immigration forms with intelligent document processing, multilingual support, and secure digital signatures.",
+    "getStarted": "Get Started",
+    "features": {
+      "multilingual": {
+        "title": "Multilingual Support",
+        "description": "Available in English, Spanish, French, and Arabic with full RTL support"
+      },
+      "smartForms": {
+        "title": "Smart Forms",
+        "description": "USCIS forms with OCR document extraction and AI-powered pre-filling"
+      },
+      "secure": {
+        "title": "Secure & Compliant",
+        "description": "End-to-end encryption, audit logging, and GDPR compliance"
+      }
+    }
+  },
+  "forms": {
+    "title": "Immigration Forms",
+    "selectForm": "Select a form to get started",
+    "i485": {
+      "title": "Form I-485",
+      "description": "Application to Adjust Status to Permanent Resident"
+    },
+    "i130": {
+      "title": "Form I-130",
+      "description": "Petition for Alien Relative"
+    }
+  },
+  "footer": {
+    "copyright": "© 2024 Immigration Suite. All rights reserved.",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "contact": "Contact Us"
+  }
+}

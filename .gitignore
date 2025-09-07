@@ -1,0 +1,123 @@
+# Dependencies
+node_modules/
+*/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# nyc test coverage
+.nyc_output
+
+# Build outputs
+build/
+dist/
+lib/
+*.tgz
+*.tar.gz
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.build
+
+# Next.js build output
+.next
+out
+
+# Nuxt.js build / generate output
+.nuxt
+
+# Gatsby files
+.cache/
+public
+
+# Vuepress build output
+.vuepress/dist
+
+# Serverless directories
+.serverless/
+
+# FuseBox cache
+.fusebox/
+
+# DynamoDB Local files
+.dynamodb/
+
+# TernJS port file
+.tern-port
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+logs
+*.log
+
+# Temporary folders
+tmp/
+temp/
+
+# Application specific
+uploads/
+*.sqlite
+*.sqlite3
+
+# PDF templates (generated)
+apps/pdf-fill/templates/*.pdf
+
+# Security files
+.env.production
+.env.staging
+secrets/
+*.pem
+*.key
+*.crt
+
+# Database files
+*.db
+
+# Test files
+coverage/
+.nyc_output/
+
+# Immigration Suite specific
+uploads/
+documents/
+temp-files/
+pdf-cache/
+ocr-cache/
+mail-attachments/
+form-templates-cache/
+certs/
+keys/
+ssl/
+local-config/
+local.json
+development.json

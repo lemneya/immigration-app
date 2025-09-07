@@ -1,0 +1,502 @@
+version: '3.8'
+
+services:
+  # Infrastructure Services
+  
+  # MongoDB for data persistence
+  mongodb:
+    image: mongo:7-jammy
+    container_name: immigration-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: immigration
+      MONGO_INITDB_ROOT_PASSWORD: immigration123
+      MONGO_INITDB_DATABASE: immigration_suite
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    networks:
+      - immigration-network
+
+  # Redis for caching and sessions
+  redis:
+    image: redis:7-alpine
+    container_name: immigration-redis
+    restart: unless-stopped
+    command: redis-server --requirepass redis123
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - immigration-network
+
+  # PostgreSQL with pgvector for embeddings
+  postgres:
+    image: pgvector/pgvector:pg15
+    container_name: bmore-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: bmore_vectors
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-postgres.sql:/docker-entrypoint-initdb.d/init-postgres.sql
+    networks:
+      - immigration-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Nginx reverse proxy
+  nginx:
+    image: nginx:alpine
+    container_name: immigration-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/certs:/etc/nginx/certs:ro
+    depends_on:
+      - web
+      - admin-dashboard
+      - security
+      - ocr
+      - pdf-fill
+      - e-signature
+      - case-status
+      - voice-translation
+    networks:
+      - immigration-network
+
+  # Application Services
+
+  # Main web application (Next.js)
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    container_name: immigration-web
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      MONGODB_URI: mongodb://immigration:immigration123@mongodb:27017/immigration_suite
+      REDIS_URI: redis://redis:6379
+      SECURITY_SERVICE_URL: http://security:3010
+      OCR_SERVICE_URL: http://ocr:8000
+      PDF_SERVICE_URL: http://pdf-fill:3002
+      ESIGN_SERVICE_URL: http://e-signature:3003
+      CASE_STATUS_SERVICE_URL: http://case-status:3004
+      VOICE_TRANSLATION_SERVICE_URL: http://voice-translation:3009
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongodb
+      - redis
+      - security
+    networks:
+      - immigration-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').request({port:3000,path:'/api/health'}).end()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Admin dashboard (Next.js)
+  admin-dashboard:
+    build:
+      context: .
+      dockerfile: apps/admin-dashboard/Dockerfile
+    container_name: immigration-admin
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      MONGODB_URI: mongodb://immigration:immigration123@mongodb:27017/immigration_suite
+      REDIS_URI: redis://redis:6379
+      SECURITY_SERVICE_URL: http://security:3010
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mongodb
+      - redis
+      - security
+    networks:
+      - immigration-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').request({port:3001,path:'/api/health'}).end()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Security service (Node.js/Express)
+  security:
+    build:
+      context: .
+      dockerfile: apps/security/Dockerfile
+    container_name: immigration-security
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3010
+      MONGODB_URI: mongodb://immigration:immigration123@mongodb:27017/immigration_suite
+      REDIS_URI: redis://redis:6379
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-super-secret-access-key-change-in-production}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-super-secret-refresh-key-change-in-production}
+      PII_DETECTION_ENABLED: true
+      AUDIT_ENABLED: true
+    ports:
+      - "3010:3010"
+    depends_on:
+      - mongodb
+      - redis
+    networks:
+      - immigration-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').request({port:3010,path:'/health'}).end()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # OCR service (FastAPI/Python)
+  ocr:
+    build:
+      context: .
+      dockerfile: apps/ocr/Dockerfile
+    container_name: immigration-ocr
+    restart: unless-stopped
+    environment:
+      PORT: 8000
+      PYTHONPATH: /app
+      SECURITY_SERVICE_URL: http://security:3010
+    ports:
+      - "8000:8000"
+    depends_on:
+      - security
+    networks:
+      - immigration-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # PDF fill service (Node.js/Express)
+  pdf-fill:
+    build:
+      context: .
+      dockerfile: apps/pdf-fill/Dockerfile
+    container_name: immigration-pdf
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3002
+      MONGODB_URI: mongodb://immigration:immigration123@mongodb:27017/immigration_suite
+      SECURITY_SERVICE_URL: http://security:3010
+      OCR_SERVICE_URL: http://ocr:8000
+    ports:
+      - "3002:3002"
+    depends_on:
+      - mongodb
+      - security
+      - ocr
+    networks:
+      - immigration-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').request({port:3002,path:'/health'}).end()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # E-signature service (Node.js/Express)
+  e-signature:
+    build:
+      context: .
+      dockerfile: apps/e-signature/Dockerfile
+    container_name: immigration-esign
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3003
+      MONGODB_URI: mongodb://immigration:immigration123@mongodb:27017/immigration_suite
+      SECURITY_SERVICE_URL: http://security:3010
+      DOCUSEAL_API_URL: ${DOCUSEAL_API_URL:-https://api.docuseal.co}
+      DOCUSEAL_API_KEY: ${DOCUSEAL_API_KEY}
+    ports:
+      - "3003:3003"
+    depends_on:
+      - mongodb
+      - security
+    networks:
+      - immigration-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').request({port:3003,path:'/health'}).end()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # Case status service (Node.js/Express)
+  case-status:
+    build:
+      context: .
+      dockerfile: apps/case-status/Dockerfile
+    container_name: immigration-case-status
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3004
+      MONGODB_URI: mongodb://immigration:immigration123@mongodb:27017/immigration_suite
+      REDIS_URI: redis://redis:6379
+      SECURITY_SERVICE_URL: http://security:3010
+      USCIS_API_RATE_LIMIT: 60
+    ports:
+      - "3004:3004"
+    depends_on:
+      - mongodb
+      - redis
+      - security
+    networks:
+      - immigration-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').request({port:3004,path:'/health'}).end()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # Voice translation service (Node.js/Express)
+  voice-translation:
+    build:
+      context: .
+      dockerfile: apps/voice-translation/Dockerfile
+    container_name: immigration-voice
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3009
+      MONGODB_URI: mongodb://immigration:immigration123@mongodb:27017/immigration_suite
+      REDIS_URI: redis://redis:6379
+      SECURITY_SERVICE_URL: http://security:3010
+      EMBED_SERVICE_URL: http://embed-service:3011
+      GOOGLE_CLOUD_PROJECT_ID: ${GOOGLE_CLOUD_PROJECT_ID}
+      GOOGLE_APPLICATION_CREDENTIALS: /app/gcp-service-account.json
+      LIVEKIT_API_KEY: ${LIVEKIT_API_KEY}
+      LIVEKIT_API_SECRET: ${LIVEKIT_API_SECRET}
+      LIVEKIT_WS_URL: ${LIVEKIT_WS_URL:-wss://immigration-suite.livekit.cloud}
+    ports:
+      - "3009:3009"
+    depends_on:
+      - mongodb
+      - redis
+      - security
+      - embed-service
+    networks:
+      - immigration-network
+    volumes:
+      - ./gcp-service-account.json:/app/gcp-service-account.json:ro
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').request({port:3009,path:'/health'}).end()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # Embedding service with Gemma (Node.js/Express)
+  embed-service:
+    build:
+      context: .
+      dockerfile: services/embed-service/Dockerfile
+    container_name: bmore-embed-service
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3011
+      POSTGRES_URL: postgresql://postgres:postgres123@postgres:5432/bmore_vectors
+      GEMMA_MODEL: ${GEMMA_MODEL:-Xenova/all-MiniLM-L6-v2}
+      LOG_LEVEL: info
+    ports:
+      - "3011:3011"
+    depends_on:
+      - postgres
+    networks:
+      - immigration-network
+    volumes:
+      - embed_cache:/app/.cache
+      - embed_models:/app/models
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').request({port:3011,path:'/health'}).end()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # LibreTranslate service for machine translation
+  libre-translate:
+    image: libretranslate/libretranslate:latest
+    container_name: bmore-libretranslate
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      LT_LOAD_ONLY: "ar,en,es,fr"
+      LT_THREADS: 4
+      LT_SUGGESTIONS: false
+      LT_DISABLE_WEB_UI: false
+    volumes:
+      - libretranslate_data:/home/libretranslate/.local
+    networks:
+      - immigration-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5000/languages || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
+
+  # MT Gateway service (Python FastAPI)  
+  mt-gateway:
+    build:
+      context: .
+      dockerfile: services/mt-gateway/Dockerfile
+    container_name: bmore-mt-gateway
+    restart: unless-stopped
+    environment:
+      PORT: 7001
+      MT_PROVIDER: ${MT_PROVIDER:-LIBRE}
+      LIBRE_URL: http://libre-translate:5000
+      REDIS_URL: redis://redis:6379
+      USE_GPU: false
+      CTRANSLATE_DEVICE: cpu
+      CTRANSLATE_THREADS: 4
+    ports:
+      - "7001:7001"
+    depends_on:
+      - libre-translate
+      - redis
+    networks:
+      - immigration-network
+    volumes:
+      - mt_models:/models
+      - mt_cache:/cache
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:7001/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # Format service with Okapi XLIFF support (Python FastAPI)
+  format-service:
+    build:
+      context: .
+      dockerfile: services/format-service/Dockerfile
+    container_name: bmore-format-service
+    restart: unless-stopped
+    environment:
+      PORT: 8001
+      PYTHONPATH: /app
+      TEMP_DIR: /app/temp
+      OUTPUT_DIR: /app/output
+      UPLOAD_DIR: /app/uploads
+      OKAPI_ROOT: /opt/okapi-apps_cocoon-m40-x64_1.44.0
+      JAVA_HOME: /usr/lib/jvm/java-11-openjdk-amd64
+    ports:
+      - "8001:8001"
+    networks:
+      - immigration-network
+    volumes:
+      - format_temp:/app/temp
+      - format_output:/app/output
+      - format_uploads:/app/uploads
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8001/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 90s
+
+  # Mail service for document intelligence (Node.js/Express)
+  mail-service:
+    build:
+      context: .
+      dockerfile: apps/mail-service/Dockerfile
+    container_name: bmore-mail-service
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3005
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: bmore_vectors
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+      OCR_SERVICE_URL: http://ocr:8000
+      MT_GATEWAY_URL: http://mt-gateway:7001
+      EMBED_SERVICE_URL: http://embed-service:3011
+      UPLOAD_DIR: /app/uploads
+      LOG_LEVEL: info
+    ports:
+      - "3005:3005"
+    depends_on:
+      - postgres
+      - ocr
+      - mt-gateway
+      - embed-service
+    networks:
+      - immigration-network
+    volumes:
+      - mail_uploads:/app/uploads
+      - mail_temp:/app/temp
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').request({port:3005,path:'/health'}).end()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 45s
+
+networks:
+  immigration-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+    driver: local
+  redis_data:
+    driver: local
+  postgres_data:
+    driver: local
+  embed_cache:
+    driver: local
+  embed_models:
+    driver: local
+  libretranslate_data:
+    driver: local
+  mt_models:
+    driver: local
+  mt_cache:
+    driver: local
+  format_temp:
+    driver: local
+  format_output:
+    driver: local
+  format_uploads:
+    driver: local
+  mail_uploads:
+    driver: local
+  mail_temp:
+    driver: local

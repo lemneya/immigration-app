@@ -1,0 +1,98 @@
+version: '3.8'
+
+services:
+  # PaddleOCR Service
+  paddleocr:
+    image: paddlepaddle/paddle:2.5.2-gpu-cuda11.8-cudnn8.6-trt8.4
+    container_name: immigration-paddleocr
+    working_dir: /workspace
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./ocr-engines/paddleocr:/workspace
+    environment:
+      - CUDA_VISIBLE_DEVICES=0
+      - PYTHONPATH=/workspace
+    command: >
+      bash -c "
+        pip install paddlepaddle-gpu paddleocr fastapi uvicorn pillow numpy &&
+        python server.py
+      "
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    networks:
+      - immigration-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # docTR Service (Alternative OCR Engine)
+  doctr:
+    image: python:3.9-slim
+    container_name: immigration-doctr
+    working_dir: /workspace
+    ports:
+      - "8002:8002"
+    volumes:
+      - ./ocr-engines/doctr:/workspace
+    environment:
+      - PYTHONPATH=/workspace
+    command: >
+      bash -c "
+        apt-get update && apt-get install -y gcc g++ &&
+        pip install python-doctr[tf] fastapi uvicorn pillow numpy &&
+        python server.py
+      "
+    networks:
+      - immigration-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # OCR Processing Service (Node.js)
+  ocr-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: immigration-ocr
+    ports:
+      - "3002:3002"
+    environment:
+      - NODE_ENV=production
+      - PORT=3002
+      - PADDLEOCR_URL=http://paddleocr:8001
+      - DOCTR_URL=http://doctr:8002
+      - FALLBACK_ENGINE=paddleocr
+    volumes:
+      - ocr_uploads:/app/uploads
+      - ocr_logs:/app/logs
+    depends_on:
+      - paddleocr
+      - doctr
+    networks:
+      - immigration-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+volumes:
+  ocr_uploads:
+    driver: local
+  ocr_logs:
+    driver: local
+
+networks:
+  immigration-network:
+    external: true

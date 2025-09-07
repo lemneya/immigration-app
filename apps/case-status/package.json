@@ -1,0 +1,40 @@
+{
+  "name": "@immigration-suite/case-status",
+  "version": "1.0.0",
+  "description": "USCIS case status tracking service",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "nodemon src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "test": "jest"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "axios": "^1.6.0",
+    "cheerio": "^1.0.0-rc.12",
+    "node-cron": "^3.0.3",
+    "joi": "^17.11.0",
+    "helmet": "^7.1.0",
+    "cors": "^2.8.5",
+    "compression": "^1.7.4",
+    "winston": "^3.11.0",
+    "uuid": "^9.0.1",
+    "date-fns": "^2.30.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.8.0",
+    "@types/cors": "^2.8.15",
+    "@types/compression": "^1.7.4",
+    "@types/uuid": "^9.0.6",
+    "@types/node-cron": "^3.0.11",
+    "typescript": "^5.2.2",
+    "nodemon": "^3.0.1",
+    "ts-node": "^10.9.1",
+    "jest": "^29.7.0"
+  },
+  "keywords": ["immigration", "uscis", "case-status", "tracking"],
+  "author": "Immigration Suite",
+  "license": "MIT"
+}

@@ -1,0 +1,40 @@
+{
+  "name": "@immigration-suite/web",
+  "version": "1.0.0",
+  "description": "Immigration Suite Web Application",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "clean": "rm -rf .next",
+    "test": "jest",
+    "forms:setup": "node scripts/setup-forms.js"
+  },
+  "dependencies": {
+    "@uswds/uswds": "^3.7.1",
+    "formiojs": "^4.17.0",
+    "mongoose": "^8.0.0",
+    "next": "^14.1.0",
+    "next-intl": "^3.9.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-formio": "^4.3.0",
+    "axios": "^1.6.2",
+    "form-data": "^4.0.0",
+    "formidable": "^3.5.1",
+    "@immigration-suite/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.32",
+    "sass": "^1.69.0",
+    "tailwindcss": "^3.4.0",
+    "typescript": "^5.3.0",
+    "eslint": "^8.56.0",
+    "eslint-config-next": "^14.1.0"
+  }
+}

@@ -1,0 +1,12 @@
+apiVersion: 1
+
+providers:
+  - name: 'Bmore Dashboards'
+    orgId: 1
+    folder: 'Bmore'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 30
+    allowUiUpdates: true
+    options:
+      path: /etc/grafana/provisioning/dashboards

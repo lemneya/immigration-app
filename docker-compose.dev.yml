@@ -1,0 +1,308 @@
+version: '3.8'
+
+services:
+  # Development overrides for faster development
+  
+  # Infrastructure services (same as production)
+  mongodb:
+    image: mongo:7-jammy
+    container_name: immigration-mongodb-dev
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: immigration
+      MONGO_INITDB_ROOT_PASSWORD: immigration123
+      MONGO_INITDB_DATABASE: immigration_suite_dev
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_dev_data:/data/db
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    networks:
+      - immigration-dev-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: immigration-redis-dev
+    restart: unless-stopped
+    command: redis-server --requirepass redis123
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_dev_data:/data
+    networks:
+      - immigration-dev-network
+
+  # Development services with hot reload
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile.dev
+      args:
+        - NODE_ENV=development
+    container_name: immigration-web-dev
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      MONGODB_URI: mongodb://immigration:immigration123@mongodb:27017/immigration_suite_dev
+      REDIS_URI: redis://redis:6379
+      SECURITY_SERVICE_URL: http://security:3010
+      NEXT_TELEMETRY_DISABLED: 1
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./apps/web:/app:delegated
+      - ./packages:/app/packages:ro
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      - mongodb
+      - redis
+      - security
+    networks:
+      - immigration-dev-network
+    command: pnpm dev
+
+  admin-dashboard:
+    build:
+      context: .
+      dockerfile: apps/admin-dashboard/Dockerfile.dev
+      args:
+        - NODE_ENV=development
+    container_name: immigration-admin-dev
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      PORT: 3001
+      MONGODB_URI: mongodb://immigration:immigration123@mongodb:27017/immigration_suite_dev
+      REDIS_URI: redis://redis:6379
+      SECURITY_SERVICE_URL: http://security:3010
+      NEXT_TELEMETRY_DISABLED: 1
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./apps/admin-dashboard:/app:delegated
+      - ./packages:/app/packages:ro
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      - mongodb
+      - redis
+      - security
+    networks:
+      - immigration-dev-network
+    command: pnpm dev
+
+  security:
+    build:
+      context: .
+      dockerfile: apps/security/Dockerfile.dev
+      args:
+        - NODE_ENV=development
+    container_name: immigration-security-dev
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      PORT: 3010
+      MONGODB_URI: mongodb://immigration:immigration123@mongodb:27017/immigration_suite_dev
+      REDIS_URI: redis://redis:6379
+      JWT_ACCESS_SECRET: dev-access-secret
+      JWT_REFRESH_SECRET: dev-refresh-secret
+      PII_DETECTION_ENABLED: false
+      AUDIT_ENABLED: true
+      LOG_LEVEL: debug
+    ports:
+      - "3010:3010"
+    volumes:
+      - ./apps/security:/app:delegated
+      - /app/node_modules
+      - /app/dist
+    depends_on:
+      - mongodb
+      - redis
+    networks:
+      - immigration-dev-network
+    command: pnpm dev
+
+  ocr:
+    build:
+      context: .
+      dockerfile: apps/ocr/Dockerfile.dev
+      args:
+        - PYTHON_ENV=development
+    container_name: immigration-ocr-dev
+    restart: unless-stopped
+    environment:
+      PORT: 8000
+      PYTHONPATH: /app
+      SECURITY_SERVICE_URL: http://security:3010
+      DEBUG: true
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./apps/ocr:/app:delegated
+    depends_on:
+      - security
+    networks:
+      - immigration-dev-network
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+
+  pdf-fill:
+    build:
+      context: .
+      dockerfile: apps/pdf-fill/Dockerfile.dev
+      args:
+        - NODE_ENV=development
+    container_name: immigration-pdf-dev
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      PORT: 3002
+      MONGODB_URI: mongodb://immigration:immigration123@mongodb:27017/immigration_suite_dev
+      SECURITY_SERVICE_URL: http://security:3010
+      OCR_SERVICE_URL: http://ocr:8000
+      LOG_LEVEL: debug
+    ports:
+      - "3002:3002"
+    volumes:
+      - ./apps/pdf-fill:/app:delegated
+      - /app/node_modules
+      - /app/dist
+    depends_on:
+      - mongodb
+      - security
+      - ocr
+    networks:
+      - immigration-dev-network
+    command: pnpm dev
+
+  e-signature:
+    build:
+      context: .
+      dockerfile: apps/e-signature/Dockerfile.dev
+      args:
+        - NODE_ENV=development
+    container_name: immigration-esign-dev
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      PORT: 3003
+      MONGODB_URI: mongodb://immigration:immigration123@mongodb:27017/immigration_suite_dev
+      SECURITY_SERVICE_URL: http://security:3010
+      DOCUSEAL_API_URL: https://api.docuseal.co
+      LOG_LEVEL: debug
+    ports:
+      - "3003:3003"
+    volumes:
+      - ./apps/e-signature:/app:delegated
+      - /app/node_modules
+      - /app/dist
+    depends_on:
+      - mongodb
+      - security
+    networks:
+      - immigration-dev-network
+    command: pnpm dev
+
+  case-status:
+    build:
+      context: .
+      dockerfile: apps/case-status/Dockerfile.dev
+      args:
+        - NODE_ENV=development
+    container_name: immigration-case-status-dev
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      PORT: 3004
+      MONGODB_URI: mongodb://immigration:immigration123@mongodb:27017/immigration_suite_dev
+      REDIS_URI: redis://redis:6379
+      SECURITY_SERVICE_URL: http://security:3010
+      USCIS_API_RATE_LIMIT: 10
+      LOG_LEVEL: debug
+    ports:
+      - "3004:3004"
+    volumes:
+      - ./apps/case-status:/app:delegated
+      - /app/node_modules
+      - /app/dist
+    depends_on:
+      - mongodb
+      - redis
+      - security
+    networks:
+      - immigration-dev-network
+    command: pnpm dev
+
+  voice-translation:
+    build:
+      context: .
+      dockerfile: apps/voice-translation/Dockerfile.dev
+      args:
+        - NODE_ENV=development
+    container_name: immigration-voice-dev
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      PORT: 3009
+      MONGODB_URI: mongodb://immigration:immigration123@mongodb:27017/immigration_suite_dev
+      REDIS_URI: redis://redis:6379
+      SECURITY_SERVICE_URL: http://security:3010
+      LOG_LEVEL: debug
+    ports:
+      - "3009:3009"
+    volumes:
+      - ./apps/voice-translation:/app:delegated
+      - /app/node_modules
+      - /app/dist
+    depends_on:
+      - mongodb
+      - redis
+      - security
+    networks:
+      - immigration-dev-network
+    command: pnpm dev
+
+  # Development tools
+  
+  # MongoDB Express for database management
+  mongo-express:
+    image: mongo-express:1-20-alpine3.18
+    container_name: immigration-mongo-express
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: immigration
+      ME_CONFIG_MONGODB_ADMINPASSWORD: immigration123
+      ME_CONFIG_MONGODB_URL: mongodb://immigration:immigration123@mongodb:27017/
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: admin123
+    depends_on:
+      - mongodb
+    networks:
+      - immigration-dev-network
+
+  # Redis Commander for Redis management
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: immigration-redis-commander
+    restart: unless-stopped
+    ports:
+      - "8082:8081"
+    environment:
+      REDIS_HOSTS: local:redis:6379:0:redis123
+    depends_on:
+      - redis
+    networks:
+      - immigration-dev-network
+
+networks:
+  immigration-dev-network:
+    driver: bridge
+
+volumes:
+  mongodb_dev_data:
+    driver: local
+  redis_dev_data:
+    driver: local

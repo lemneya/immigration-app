@@ -1,0 +1,50 @@
+{
+  "name": "@immigration-suite/admin-dashboard",
+  "version": "1.0.0",
+  "description": "Admin dashboard for Immigration Suite operations",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3008",
+    "build": "next build",
+    "start": "next start -p 3008",
+    "lint": "next lint",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@headlessui/react": "^1.7.17",
+    "@heroicons/react": "^2.0.18",
+    "@tailwindcss/forms": "^0.5.10",
+    "@tailwindcss/typography": "^0.5.16",
+    "autoprefixer": "^10.4.16",
+    "axios": "^1.6.0",
+    "clsx": "^2.0.0",
+    "date-fns": "^2.30.0",
+    "framer-motion": "^10.16.4",
+    "lucide-react": "^0.292.0",
+    "next": "^14.0.3",
+    "postcss": "^8.4.31",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.47.0",
+    "react-hot-toast": "^2.4.1",
+    "react-query": "^3.39.3",
+    "recharts": "^2.8.0",
+    "tailwindcss": "^3.3.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.0",
+    "@types/react": "^18.2.31",
+    "@types/react-dom": "^18.2.14",
+    "eslint": "^8.51.0",
+    "eslint-config-next": "^14.0.3",
+    "typescript": "^5.2.2"
+  },
+  "keywords": [
+    "admin",
+    "dashboard",
+    "immigration",
+    "operations"
+  ],
+  "author": "Immigration Suite",
+  "license": "MIT"
+}
