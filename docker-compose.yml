@@ -75,6 +75,15 @@ services:
       - e-signature
       - case-status
       - voice-translation
+      - parlant-server
+      - client-portal
+      - payment-processor
+      - ai-chatbot
+      - video-consultation
+      - mobile-app
+      - analytics
+      - notifications
+      - integration-apis
     networks:
       - immigration-network
 
@@ -468,6 +477,280 @@ services:
       timeout: 10s
       retries: 3
       start_period: 45s
+
+  # NEW SERVICES ADDED TO PLATFORM
+
+  # Parlant Conversation Engine
+  parlant-server:
+    build:
+      context: .
+      dockerfile: apps/parlant-server/Dockerfile
+    container_name: immigration-parlant
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3012
+      MONGODB_URI: mongodb://immigration:immigration123@mongodb:27017/immigration_suite
+      REDIS_URI: redis://redis:6379
+      SECURITY_SERVICE_URL: http://security:3010
+      OCR_SERVICE_URL: http://ocr:8000
+      PDF_SERVICE_URL: http://pdf-fill:3002
+      ESIGN_SERVICE_URL: http://e-signature:3003
+      CASE_STATUS_SERVICE_URL: http://case-status:3004
+      VOICE_SERVICE_URL: http://voice-translation:3009
+      MAIL_SERVICE_URL: http://mail-service:3005
+      PAYMENT_SERVICE_URL: http://payment-processor:3014
+      CLIENT_PORTAL_URL: http://client-portal:3013
+    ports:
+      - "3012:3012"
+    depends_on:
+      - mongodb
+      - redis
+      - security
+    networks:
+      - immigration-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').request({port:3012,path:'/health'}).end()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # Client Portal (Next.js)
+  client-portal:
+    build:
+      context: .
+      dockerfile: apps/client-portal/Dockerfile
+    container_name: immigration-client-portal
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3013
+      MONGODB_URI: mongodb://immigration:immigration123@mongodb:27017/immigration_suite
+      REDIS_URI: redis://redis:6379
+      SECURITY_SERVICE_URL: http://security:3010
+      PARLANT_SERVER_URL: http://parlant-server:3012
+    ports:
+      - "3013:3013"
+    depends_on:
+      - mongodb
+      - redis
+      - security
+      - parlant-server
+    networks:
+      - immigration-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').request({port:3013,path:'/api/health'}).end()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Payment Processor Service
+  payment-processor:
+    build:
+      context: .
+      dockerfile: apps/payment-processor/Dockerfile
+    container_name: immigration-payment
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3014
+      MONGODB_URI: mongodb://immigration:immigration123@mongodb:27017/immigration_suite
+      REDIS_URI: redis://redis:6379
+      SECURITY_SERVICE_URL: http://security:3010
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
+    ports:
+      - "3014:3014"
+    depends_on:
+      - mongodb
+      - redis
+      - security
+    networks:
+      - immigration-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').request({port:3014,path:'/health'}).end()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # AI Chatbot Service
+  ai-chatbot:
+    build:
+      context: .
+      dockerfile: apps/ai-chatbot/Dockerfile
+    container_name: immigration-chatbot
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3015
+      MONGODB_URI: mongodb://immigration:immigration123@mongodb:27017/immigration_suite
+      REDIS_URI: redis://redis:6379
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      PARLANT_SERVER_URL: http://parlant-server:3012
+    ports:
+      - "3015:3015"
+    depends_on:
+      - mongodb
+      - redis
+      - parlant-server
+    networks:
+      - immigration-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').request({port:3015,path:'/health'}).end()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # Video Consultation Service
+  video-consultation:
+    build:
+      context: .
+      dockerfile: apps/video-consultation/Dockerfile
+    container_name: immigration-video
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3016
+      MONGODB_URI: mongodb://immigration:immigration123@mongodb:27017/immigration_suite
+      REDIS_URI: redis://redis:6379
+      LIVEKIT_API_KEY: ${LIVEKIT_API_KEY}
+      LIVEKIT_API_SECRET: ${LIVEKIT_API_SECRET}
+      LIVEKIT_WS_URL: ${LIVEKIT_WS_URL:-wss://immigration-suite.livekit.cloud}
+    ports:
+      - "3016:3016"
+    depends_on:
+      - mongodb
+      - redis
+    networks:
+      - immigration-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').request({port:3016,path:'/health'}).end()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # Mobile App Backend
+  mobile-app:
+    build:
+      context: .
+      dockerfile: apps/mobile-app/Dockerfile
+    container_name: immigration-mobile
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3017
+      MONGODB_URI: mongodb://immigration:immigration123@mongodb:27017/immigration_suite
+      REDIS_URI: redis://redis:6379
+      SECURITY_SERVICE_URL: http://security:3010
+      PARLANT_SERVER_URL: http://parlant-server:3012
+    ports:
+      - "3017:3017"
+    depends_on:
+      - mongodb
+      - redis
+      - security
+      - parlant-server
+    networks:
+      - immigration-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').request({port:3017,path:'/health'}).end()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # Analytics Service
+  analytics:
+    build:
+      context: .
+      dockerfile: apps/analytics/Dockerfile
+    container_name: immigration-analytics
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3018
+      MONGODB_URI: mongodb://immigration:immigration123@mongodb:27017/immigration_suite
+      POSTGRES_URL: postgresql://postgres:postgres123@postgres:5432/bmore_vectors
+      REDIS_URI: redis://redis:6379
+    ports:
+      - "3018:3018"
+    depends_on:
+      - mongodb
+      - postgres
+      - redis
+    networks:
+      - immigration-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').request({port:3018,path:'/health'}).end()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # Notifications Service
+  notifications:
+    build:
+      context: .
+      dockerfile: apps/notifications/Dockerfile
+    container_name: immigration-notifications
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3019
+      MONGODB_URI: mongodb://immigration:immigration123@mongodb:27017/immigration_suite
+      REDIS_URI: redis://redis:6379
+      TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID}
+      TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN}
+      TWILIO_FROM_NUMBER: ${TWILIO_FROM_NUMBER}
+      SENDGRID_API_KEY: ${SENDGRID_API_KEY}
+      FCM_SERVER_KEY: ${FCM_SERVER_KEY}
+    ports:
+      - "3019:3019"
+    depends_on:
+      - mongodb
+      - redis
+    networks:
+      - immigration-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').request({port:3019,path:'/health'}).end()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # Integration APIs Service
+  integration-apis:
+    build:
+      context: .
+      dockerfile: apps/integration-apis/Dockerfile
+    container_name: immigration-integrations
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3020
+      MONGODB_URI: mongodb://immigration:immigration123@mongodb:27017/immigration_suite
+      REDIS_URI: redis://redis:6379
+      SECURITY_SERVICE_URL: http://security:3010
+    ports:
+      - "3020:3020"
+    depends_on:
+      - mongodb
+      - redis
+      - security
+    networks:
+      - immigration-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').request({port:3020,path:'/health'}).end()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
 networks:
   immigration-network:
