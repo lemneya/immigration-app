@@ -2,15 +2,14 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  output: 'standalone',
   i18n: {
     locales: ['en', 'es', 'fr', 'ar'],
     defaultLocale: 'en',
     localeDetection: false
   },
-  // Enable SCSS for USWDS
-  sassOptions: {
-    includePaths: ['./node_modules/@uswds/uswds/packages']
+  env: {
+    NEXTAUTH_URL: process.env.NEXTAUTH_URL || 'http://localhost:3004',
+    NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET || 'client-portal-secret',
   }
 };
 

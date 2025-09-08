@@ -1,9 +1,10 @@
 import { Router } from 'express';
-import { VoiceTranslationService } from '@/services/voiceTranslation';
+import { VoiceTranslationService } from '../services/voiceTranslation';
 import { sessionRoutes } from './sessions';
 import { participantRoutes } from './participants';
 import { translationRoutes } from './translations';
-import { logger } from '@/utils/logger';
+import pstnRoutes from './pstn';
+import { logger } from '../utils/logger';
 
 export function createRoutes(voiceTranslationService: VoiceTranslationService): Router {
   const router = Router();
@@ -25,6 +26,7 @@ export function createRoutes(voiceTranslationService: VoiceTranslationService): 
         sessions: '/api/sessions',
         participants: '/api/participants',
         translations: '/api/translations',
+        pstn: '/api/pstn',
         health: '/health',
       },
       supportedLanguages: ['en', 'es', 'fr', 'ar'],
@@ -35,6 +37,7 @@ export function createRoutes(voiceTranslationService: VoiceTranslationService): 
   router.use('/sessions', sessionRoutes(voiceTranslationService));
   router.use('/participants', participantRoutes(voiceTranslationService));
   router.use('/translations', translationRoutes(voiceTranslationService));
+  router.use('/pstn', pstnRoutes);
 
   // Service statistics endpoint
   router.get('/stats', async (req, res) => {

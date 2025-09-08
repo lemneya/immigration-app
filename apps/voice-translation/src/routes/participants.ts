@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import Joi from 'joi';
-import { VoiceTranslationService } from '@/services/voiceTranslation';
-import { SupportedLanguage } from '@/types';
-import { logger } from '@/utils/logger';
+import { VoiceTranslationService } from '../services/voiceTranslation';
+import { SupportedLanguage } from '../types';
+import { logger } from '../utils/logger';
 
 const addParticipantSchema = Joi.object({
   participantId: Joi.string().required().min(1).max(100),

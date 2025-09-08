@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
-import { TranslationSession, Participant, LiveKitConfig } from '@/types';
-import { logger } from '@/utils/logger';
+import { TranslationSession, Participant, LiveKitConfig } from '../types';
+import { logger } from '../utils/logger';
 
 // Simplified mock implementation for development
 export class LiveKitService extends EventEmitter {

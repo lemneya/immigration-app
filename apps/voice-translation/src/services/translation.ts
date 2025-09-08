@@ -5,8 +5,8 @@ import {
   TranslationProvider, 
   SupportedLanguage,
   LANGUAGE_NAMES 
-} from '@/types';
-import { logger } from '@/utils/logger';
+} from '../types';
+import { logger } from '../utils/logger';
 import fetch from 'node-fetch';
 
 export class TranslationService extends EventEmitter {

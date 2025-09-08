@@ -5,8 +5,8 @@ import {
   SpeechConfig, 
   SupportedLanguage,
   LANGUAGE_CODES 
-} from '@/types';
-import { logger } from '@/utils/logger';
+} from '../types';
+import { logger } from '../utils/logger';
 
 // Mock speech service for development - would use Google Cloud APIs in production
 export class SpeechService extends EventEmitter {

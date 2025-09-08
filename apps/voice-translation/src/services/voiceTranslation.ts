@@ -11,8 +11,8 @@ import {
   SupportedLanguage,
   LiveKitConfig,
   SpeechConfig
-} from '@/types';
-import { logger } from '@/utils/logger';
+} from '../types';
+import { logger } from '../utils/logger';
 
 export class VoiceTranslationService extends EventEmitter {
   private liveKit: LiveKitService;

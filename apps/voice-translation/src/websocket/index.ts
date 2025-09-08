@@ -1,13 +1,13 @@
 import { Server as SocketIOServer, Socket } from 'socket.io';
-import { VoiceTranslationService } from '@/services/voiceTranslation';
+import { VoiceTranslationService } from '../services/voiceTranslation';
 import { 
   WebSocketMessage, 
   AudioTranscription, 
   Translation, 
   SpeechSynthesis,
   SupportedLanguage 
-} from '@/types';
-import { logger } from '@/utils/logger';
+} from '../types';
+import { logger } from '../utils/logger';
 
 interface ClientInfo {
   sessionId?: string;
