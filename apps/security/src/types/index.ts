@@ -2,7 +2,7 @@ export interface User {
   id: string;
   email: string;
   hashedPassword: string;
-  role: 'admin' | 'operator' | 'user';
+  role: 'client' | 'paralegal' | 'attorney' | 'admin' | 'operator' | 'user';
   permissions: string[];
   isActive: boolean;
   lastLogin?: Date;
